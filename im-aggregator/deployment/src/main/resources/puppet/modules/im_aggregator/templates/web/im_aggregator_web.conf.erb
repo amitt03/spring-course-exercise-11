@@ -1,0 +1,134 @@
+<%
+def get_param(variable)
+   return scope.lookupvar('im_aggregator::web::' + variable)
+end
+
+def get_apache_web_param(variable)
+   return scope.lookupvar('apache_webserver::config::' + variable)
+end
+
+def get_balancer_member(balancer_member, ajp_port)
+    result = ""
+    if balancer_member.is_a? Array
+        balancer_member.each do |name|
+           result = result + "  BalancerMember ajp://#{name}:#{ajp_port}\n"
+        end
+    	elsif balancer_member != ''
+    		result = "BalancerMember ajp://#{balancer_member}:#{ajp_port}"
+    	end
+    return result
+end
+%>
+
+
+Listen <%= get_param('https_port') %>
+Listen <%= get_param('http_port') %>
+
+################################
+####  HTTPS virtual hosts   ####
+################################
+<VirtualHost *:<%= get_param('https_port') %>>
+    ServerName <%= get_param('server_name') %>
+
+    ErrorLog <%= get_apache_web_param('logdir') %><%= get_param('server_name') %>_https.error.log
+    CustomLog <%= get_apache_web_param('logdir') %><%= get_param('server_name') %>_https.access.log combined
+	
+	#LogLEvel debug
+
+    ProxyPassMatch / balancer://cluster_im_aggregator/im_aggregator/
+    <Proxy balancer://cluster_im_aggregator>
+      <%= get_balancer_member(get_param('im_aggregator_balancer_member'), get_param('ajp_port'))%>
+    </Proxy>
+
+	SSLEngine on
+	SSLProtocol all -SSLv2
+	SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
+
+	SSLCertificateFile "<%= get_apache_web_param('document_root') %>/../certs/<%= get_param('ssl_certificate_file') %>"
+    SSLCertificateKeyFile "<%= get_apache_web_param('document_root') %>/../certs/<%= get_param('ssl_certificate_key_file') %>"
+    SSLCertificateChainFile "<%= get_apache_web_param('document_root') %>/../certs/<%= get_param('ssl_ca_certificate_file') %>"
+
+	BrowserMatch ".*MSIE [2-5]\..*" \
+        nokeepalive ssl-unclean-shutdown \
+        downgrade-1.0 force-response-1.0
+
+    <ifModule mod_expires.c>
+        ExpiresActive On
+        ExpiresDefault "access plus 1 hour"
+    </ifModule>
+
+   <IfModule mod_deflate.c>
+          SetOutputFilter DEFLATE
+   </IfModule>
+
+    CustomLog "<%= get_apache_web_param('logdir') %>ssl_request_log" \
+              "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+
+
+    ProxyRequests Off
+    <Proxy *>
+       AddDefaultCharset Off
+       Order deny,allow
+       Allow from all
+    </Proxy>
+
+    ProxyPass /probe/lbtest !
+    ProxyPass /img30.gif !
+
+    <Directory />
+        Options FollowSymLinks
+        AllowOverride None
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+</VirtualHost>
+
+
+################################
+####  HTTP virtual hosts    ####
+################################
+
+<VirtualHost *:<%= get_param('http_port') %>>
+	ServerName <%= get_param('server_name') %>
+
+    ErrorLog <%= get_apache_web_param('logdir') %><%= get_param('server_name') %>_http.error.log
+    CustomLog <%= get_apache_web_param('logdir') %><%= get_param('server_name') %>_http.access.log combined
+
+
+    ProxyPassMatch / balancer://cluster_im_aggregator/im_aggregator/
+    <Proxy balancer://cluster_im_aggregator>
+      <%= get_balancer_member(get_param('im_aggregator_balancer_member'), get_param('ajp_port'))%>
+    </Proxy>
+
+    BrowserMatch ".*MSIE [2-5]\..*" \
+        nokeepalive ssl-unclean-shutdown \
+        downgrade-1.0 force-response-1.0
+
+    <ifModule mod_expires.c>
+           ExpiresActive On
+           ExpiresDefault "access plus 1 hour"
+       </ifModule>
+
+      <IfModule mod_deflate.c>
+             SetOutputFilter DEFLATE
+      </IfModule>
+
+    ProxyRequests Off
+    <Proxy *>
+       AddDefaultCharset Off
+       Order deny,allow
+       Allow from all
+    </Proxy>
+
+    ProxyPass /probe/lbtest !
+    ProxyPass /img30.gif !
+
+    <Directory />
+        Options FollowSymLinks
+        AllowOverride None
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+</VirtualHost>

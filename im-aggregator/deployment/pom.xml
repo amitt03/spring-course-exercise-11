@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>deployment</artifactId>
+    <packaging>pom</packaging>
+    <name>IM Aggregator Deployments</name>
+
+    <parent>
+        <artifactId>im-aggregator</artifactId>
+        <groupId>com.sc101</groupId>
+        <version>1.0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <puppet.agents.deploy.string>-I ctvr-git01.tlv.lpnet.com -I ctvr-git01.tlv.lpnet.com
+        </puppet.agents.deploy.string>
+        <puppet.agents.verify.string>-I ctvr-git01.tlv.lpnet.com</puppet.agents.verify.string>
+
+        <lp.puppet.modules.svn.path>${lp.svn.url}/deployment/src/main/resources/puppet/modules/${project.namespace}</lp.puppet.modules.svn.path>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.sc101</groupId>
+            <artifactId>im-aggregator-application</artifactId>
+            <version>1.0.0.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>rpm</id>
+            <activation>
+                <property>
+                    <name>teamcity.build.id</name>
+                </property>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>rpm-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <executions>
+                            <execution>
+                                <id>rpm-version-initialize</id>
+                                <goals>
+                                    <goal>version</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>rpm_creation</id>
+                                <goals>
+                                    <goal>version</goal>
+                                    <goal>rpm</goal>
+                                </goals>
+                                <configuration>
+                                    <projversion>${rpm.version}</projversion>
+                                    <summary>${project.full.name} WAR</summary>
+                                    <description>${project.full.name} WAR application.</description>
+                                    <mappings>
+                                        <mapping>
+                                            <directory>/liveperson/code/server_tomcat/webapps/</directory>
+                                            <filemode>750</filemode>
+                                            <username>${lp.rpm.app.user}</username>
+                                            <groupname>${lp.rpm.app.group}</groupname>
+                                            <dependency>
+                                                <includes>
+                                                    <include>
+                                                        com.sc101:im-aggregator-application:${project.version}
+                                                    </include>
+                                                </includes>
+                                            </dependency>
+                                        </mapping>
+                                        <mapping>
+                                            <directory>
+                                                /liveperson/code/server_tomcat/conf/liveperson/${project.namespace}/public/
+                                            </directory>
+                                            <filemode>750</filemode>
+                                            <username>appuser</username>
+                                            <groupname>appgrp</groupname>
+                                        </mapping>
+                                    </mappings>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>ci_upload</id>
+            <activation>
+                <property>
+                    <name>teamcity.build.id</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.liveperson.maven.lp-yum-plugin</groupId>
+                        <artifactId>lp-yum-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>upload_rpm_2_ci_repo</id>
+                                <goals>
+                                    <goal>mksubrepo</goal>
+                                    <goal>upload</goal>
+                                    <goal>createrepo</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <reponame>${lp.yum.ci.repo.name}</reponame>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+        <profile>
+            <id>ci_deploy</id>
+            <activation>
+                <property>
+                    <name>teamcity.build.id</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.liveperson.maven.deploy</groupId>
+                        <artifactId>lp-puppet-deploy-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>deploy_rpm_2_ci</id>
+                                <goals>
+                                    <goal>createsoftlink</goal>
+                                    <goal>updatemodules</goal>
+                                    <goal>updatemanifest</goal>
+                                    <goal>mcollectiverun</goal>
+                                </goals>
+                                <phase>install</phase>
+                                <configuration>
+                                    <puppetAgents>${puppet.agents.deploy.string}</puppetAgents>
+                                    <svnModulesPath>${lp.puppet.modules.svn.path}</svnModulesPath>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>verify_deploy_rpm_2_ci</id>
+                                <goals>
+                                    <goal>deployVerification</goal>
+                                </goals>
+                                <phase>install</phase>
+                                <configuration>
+                                    <puppetAgents>${puppet.agents.verify.string}</puppetAgents>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

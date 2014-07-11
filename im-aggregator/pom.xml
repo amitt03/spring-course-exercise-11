@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+	<modelVersion>4.0.0</modelVersion>
+    <groupId>com.sc101</groupId>
+    <artifactId>im-aggregator</artifactId>
+	<packaging>pom</packaging>
+	<name>IM Aggregator</name>
+	<version>1.0.0.0-SNAPSHOT</version>
+
+    <!--
+        Parent pom can be changed
+         It needs to contain information regarding build process including packaging jars and wars
+    -->
+    <parent>
+        <groupId>com.liveperson.maven</groupId>
+        <artifactId>liveperson-parent</artifactId>
+        <version>3.2.52</version>
+    </parent>
+
+    <properties>
+        <java.version>1.7</java.version>
+        <springframework.version>4.0.2.RELEASE</springframework.version>
+        <logback.version>1.1.1</logback.version>
+        <slf4j.version>1.7.6</slf4j.version>
+
+        <project.poduction.name>im_aggregator</project.poduction.name>
+        <project.display.name>IM Aggregator</project.display.name>
+        <project.namespace>${project.poduction.name}</project.namespace>
+        <project.full.name>LivePerson ${project.namespace}</project.full.name>
+
+        <!--
+                     lp.svn.repo:
+                     this parameter is a relative path to your im-aggregator project in svn.
+                     value should be relative. Look at the next example:
+                     ${symbol_dollar}{lp.svn.root.url}/${symbol_dollar}{lp.svn.repo}/im-aggregator/trunk
+                -->
+                <lp.svn.repo>ProjectRepo</lp.svn.repo>
+        
+        <lp.svn.url>${lp.svn.root.url}/${lp.svn.repo}/im-aggregator/trunk</lp.svn.url>
+
+    </properties>
+
+    <modules>
+        <module>application</module>
+        <module>client</module>
+        <module>common</module>
+        <module>dal</module>
+        <module>facade</module>
+        <module>service</module>
+        <module>deployment</module>
+        <module>test</module>
+    </modules>
+
+    <profiles>
+        <profile>
+            <id>quick</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skipTests>true</skipTests>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <dependencies>
+
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+
+        <!-- logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
+
+        <!-- Testing and Mocking -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kubek2k</groupId>
+            <artifactId>springockito-annotations</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- Internal projects -->
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-application-documentation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-common-config</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-common-utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>dal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-dal-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-dal-stub-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>jpa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-dal-jpa-converter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-dal-jpa-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>deployment</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>facade</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-facade-rest-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-facade-rest-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-service-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-service-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-service-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-vendor-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-vendor-joker-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sc101</groupId>
+                <artifactId>im-aggregator-test-system</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+
+
+            <!-- Third Parties -->
+
+
+
+            <!-- Spring -->
+            <!--
+                Core utilities used by other modules.
+                Define this if you use Spring Utility APIs (org.springframework.core.*/org.springframework.util.*)
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${springframework.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!--
+                Expression Language (depends on spring-core)
+                Define this if you use Spring Expression APIs (org.springframework.expression.*)
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-expression</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+
+            <!--
+                Bean Factory and JavaBeans utilities (depends on spring-core)
+                Define this if you use Spring Bean APIs (org.springframework.beans.*)
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+
+            <!--
+                Aspect Oriented Programming (AOP) Framework (depends on spring-core, spring-beans)
+                Define this if you use Spring AOP APIs (org.springframework.aop.*)
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+
+            <!--
+                Application Context (depends on spring-core, spring-expression, spring-aop, spring-beans)
+                This is the central artifact for Spring's Dependency Injection Container and is generally always defined
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+
+            <!--
+                Various Application Context utilities, including EhCache, JavaMail, Quartz, and Freemarker integration
+                Define this if you need any of these integrations
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+
+            <!--
+                Transaction Management Abstraction (depends on spring-core, spring-beans, spring-aop, spring-context)
+                Define this if you use Spring Transactions or DAO Exception Hierarchy
+                (org.springframework.transaction.*/org.springframework.dao.*)
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+
+            <!--
+                JDBC Data Access Library (depends on spring-core, spring-beans, spring-context, spring-tx)
+                Define this if you use Spring's JdbcTemplate API (org.springframework.jdbc.*)
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+
+            <!--
+                Object-to-Relation-Mapping (ORM) integration with Hibernate, JPA, and iBatis.
+                (depends on spring-core, spring-beans, spring-context, spring-tx)
+                Define this if you need ORM (org.springframework.orm.*)
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+
+            <!--
+                Object-to-XML Mapping (OXM) abstraction and integration with JAXB, JiBX, Castor, XStream, and XML Beans.
+                (depends on spring-core, spring-beans, spring-context)
+                Define this if you need OXM (org.springframework.oxm.*)
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-oxm</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+
+            <!--
+                Web application development utilities applicable to both Servlet and Portlet Environments
+                (depends on spring-core, spring-beans, spring-context)
+                Define this if you use Spring MVC, or wish to use Struts, JSF, or another web framework with Spring (org.springframework.web.*)
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+
+            <!--
+                Spring MVC for Servlet Environments (depends on spring-core, spring-beans, spring-context, spring-web)
+                Define this if you use Spring MVC with a Servlet Container such as Apache Tomcat (org.springframework.web.servlet.*)
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+
+            <!--
+                Support for testing Spring applications with tools such as JUnit and TestNG
+                This artifact is generally always defined with a 'test' scope for the integration testing framework and unit testing stubs
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${springframework.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!--
+                Code Generation Library.
+                Bytecode manipulation library used to extend Java classes and implement interfaces at runtime
+            -->
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-nodep</artifactId>
+                <version>2.2.2</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <!--
+                Multi-purpose Java library for processing JSON data format
+            -->
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>1.9.13</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-core-asl</artifactId>
+                <version>1.9.13</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.3.2</version>
+            </dependency>
+
+            <!--
+                Provides a runtime binding framework for client applications including unmarshalling, marshalling, and validation capabilities
+            -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.2.11</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <!-- Slf4J -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <!-- Logback -->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <!-- GSON -->
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.2.4</version>
+            </dependency>
+
+            <!-- AspectJ -->
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>1.7.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjrt</artifactId>
+                <version>1.7.2</version>
+            </dependency>
+
+            <!-- Swagger -->
+            <dependency>
+                <groupId>com.wordnik</groupId>
+                <artifactId>swagger-annotations_2.10</artifactId>
+                <version>1.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.knappsack</groupId>
+                <artifactId>swagger4spring-web</artifactId>
+                <version>0.3.3</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>junit</artifactId>
+                        <groupId>junit</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>slf4j-api</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Servlet for MOCK MVC tests -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.0.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>3.0-alpha-1</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>jsp-api</artifactId>
+                <version>2.1</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jstl</artifactId>
+                <version>1.2</version>
+            </dependency>
+
+            <!--dozer - entity mapping-->
+            <dependency>
+                <groupId>net.sf.dozer</groupId>
+                <artifactId>dozer</artifactId>
+                <version>5.4.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- JUnit -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Mocking -->
+            <dependency>
+                <groupId>org.kubek2k</groupId>
+                <artifactId>springockito</artifactId>
+                <version>1.0.9</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.kubek2k</groupId>
+                <artifactId>springockito-annotations</artifactId>
+                <version>1.0.9</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.9.5</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-module-junit4</artifactId>
+                <version>1.5</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-api-mockito</artifactId>
+                <version>1.5</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Hibernate Validator - especially for MVC validations: implementation for JSR 303 - Bean Validation -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>5.1.0.Final</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.el</groupId>
+                <artifactId>javax.el-api</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>el-impl</groupId>
+                <artifactId>el-impl</artifactId>
+                <version>1.0</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+
+</project>

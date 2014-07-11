@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration debug="true">
+
+    <jmxConfigurator />
+
+    <appender name="STDOUT_BLOCKING" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{ISO8601} %-5level [%-25.25thread] [%-30.30logger{30}]     %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.sc101.imaggregator" level="TRACE" additivity="false">
+        <appender-ref ref="STDOUT_BLOCKING" />
+    </logger>
+
+    <root>
+        <level value="INFO" />
+        <appender-ref ref="STDOUT_BLOCKING" />
+    </root>
+
+</configuration>

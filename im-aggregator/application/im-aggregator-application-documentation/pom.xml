@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>im-aggregator-application-documentation</artifactId>
+    <packaging>war</packaging>
+    <name>IM Aggregator Documentation </name>
+
+    <parent>
+        <artifactId>application</artifactId>
+        <groupId>com.sc101</groupId>
+        <version>1.0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <description>
+        IM Aggregator web application exposing REST APIs bundled together with swagger-ui client.
+    </description>
+
+    <build>
+        <finalName>${project.namespace}</finalName>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.sc101</groupId>
+            <artifactId>im-aggregator-common-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sc101</groupId>
+            <artifactId>im-aggregator-facade-rest-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sc101</groupId>
+            <artifactId>im-aggregator-service-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sc101</groupId>
+            <artifactId>im-aggregator-dal-stub-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sc101</groupId>
+            <artifactId>im-aggregator-vendor-joker-impl</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
