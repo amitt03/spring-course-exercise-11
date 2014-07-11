@@ -1,0 +1,33 @@
+<%
+def get_param(variable)
+   return scope.lookupvar('im_aggregator::app::' + variable)
+end
+
+def get_add_params(params)
+    result = ""
+      if params.is_a? Hash
+        params.each do |name, value|
+           result = result + "#{name}: #{value} \n"
+        end
+      end
+     return result
+end
+%>
+
+### --- General Server Settings --- ###
+
+serverName: <%= hostname %>
+
+
+### --- SNMP Settings --- ###
+im_aggregator.snmp.port: <%= get_param('snmp_port')%>
+
+### --- CSDS Settings --- ###
+csds.ac.url.pattern: http://<%= get_param('csds_domain')%>/csdr/account/{0}/service/accountConfigReadWrite/baseURI.xml?version=1.0
+
+
+<% if not get_param('add_params').nil? %>
+<%= get_add_params(get_param('add_params')) %>
+<% end %>
+
+

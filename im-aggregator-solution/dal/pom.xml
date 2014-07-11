@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>dal</artifactId>
+    <packaging>pom</packaging>
+    <name>IM Aggregator DALs</name>
+
+    <parent>
+        <artifactId>im-aggregator</artifactId>
+        <groupId>com.sc101</groupId>
+        <version>1.0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <modules>
+        <module>jpa</module>
+        <module>im-aggregator-dal-api</module>
+        <module>im-aggregator-dal-stub-impl</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.sc101</groupId>
+            <artifactId>im-aggregator-common-config</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
