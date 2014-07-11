@@ -14,10 +14,6 @@
         <version>1.0.0.0-SNAPSHOT</version>
     </parent>
 
-    <build>
-        <finalName>${project.namespace}</finalName>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>com.sc101</groupId>

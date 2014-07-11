@@ -18,10 +18,6 @@
         IM Aggregator web application exposing REST APIs bundled together with swagger-ui client.
     </description>
 
-    <build>
-        <finalName>${project.namespace}</finalName>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>com.sc101</groupId>

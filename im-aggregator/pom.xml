@@ -8,38 +8,19 @@
 	<name>IM Aggregator</name>
 	<version>1.0.0.0-SNAPSHOT</version>
 
-    <!--
-        Parent pom can be changed
-         It needs to contain information regarding build process including packaging jars and wars
-    -->
-    <parent>
-        <groupId>com.liveperson.maven</groupId>
-        <artifactId>liveperson-parent</artifactId>
-        <version>3.2.52</version>
-    </parent>
-
     <properties>
         <java.version>1.7</java.version>
         <springframework.version>4.0.2.RELEASE</springframework.version>
         <logback.version>1.1.1</logback.version>
         <slf4j.version>1.7.6</slf4j.version>
-
-        <project.poduction.name>im_aggregator</project.poduction.name>
-        <project.display.name>IM Aggregator</project.display.name>
-        <project.namespace>${project.poduction.name}</project.namespace>
-        <project.full.name>LivePerson ${project.namespace}</project.full.name>
-
-        <!--
-                     lp.svn.repo:
-                     this parameter is a relative path to your im-aggregator project in svn.
-                     value should be relative. Look at the next example:
-                     ${symbol_dollar}{lp.svn.root.url}/${symbol_dollar}{lp.svn.repo}/im-aggregator/trunk
-                -->
-                <lp.svn.repo>ProjectRepo</lp.svn.repo>
-        
-        <lp.svn.url>${lp.svn.root.url}/${lp.svn.repo}/im-aggregator/trunk</lp.svn.url>
-
     </properties>
+
+	<developers>
+        <developer>
+            <name>Amit Tal</name>
+            <email>amitt03@gmail.com</email>
+        </developer>
+    </developers>
 
     <modules>
         <module>application</module>
@@ -650,5 +631,19 @@
         </dependencies>
     </dependencyManagement>
 
+	<build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <showDeprecation>false</showDeprecation>
+                    <showWarnings>false</showWarnings>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
